@@ -1,0 +1,9 @@
+node_modules
+.next
+.env
+.env.local
+.env.production
+*.log
+prisma/migrations
+postgres-data
+.DS_Store

@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #f8f7f2;
+    --bg-main: #fbfaf5;
+    --bg-elevated: #f1f0ea;
+    --bg-soft: #e8e6dd;
+    --border-subtle: #d6d3c7;
+    --accent: #1d73f2;
+    --accent-soft: rgba(29, 115, 242, 0.18);
+    --accent-strong: #1250c2;
+    --text-main: #22201a;
+    --text-muted: #777063;
+    --scrollbar-thumb: rgba(34, 32, 26, 0.25);
+    --shadow-soft: 0 35px 90px rgba(9, 10, 15, 0.08);
+    --card-glass: rgba(255, 255, 255, 0.62);
+    --radius-pill: 999px;
+    color-scheme: light;
+  }
+
+  .dark {
+    --bg: #05060a;
+    --bg-main: #0c0f14;
+    --bg-elevated: #121722;
+    --bg-soft: #1b202d;
+    --border-subtle: #2a3244;
+    --accent: #81b6ff;
+    --accent-soft: rgba(129, 182, 255, 0.3);
+    --accent-strong: #9dc6ff;
+    --text-main: #eef2ff;
+    --text-muted: #acb4c7;
+    --scrollbar-thumb: rgba(238, 242, 255, 0.25);
+    --shadow-soft: 0 35px 90px rgba(2, 4, 10, 0.65);
+    --card-glass: rgba(9, 12, 20, 0.76);
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "liga" on, "kern" on;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(29, 115, 242, 0.08), transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(132, 99, 255, 0.12), transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(249, 195, 94, 0.08), transparent 45%);
+    color: var(--text-main);
+    font-family: theme("fontFamily.sans");
+    font-weight: 400;
+    line-height: 1.6;
+    transition: background-color 250ms ease, color 250ms ease;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+    position: relative;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    z-index: -2;
+    width: clamp(260px, 38vw, 460px);
+    height: clamp(260px, 38vw, 460px);
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 250ms ease;
+  }
+
+  body::before {
+    top: -40px;
+    left: -40px;
+    background: radial-gradient(circle, rgba(29, 115, 242, 0.35), transparent 60%);
+  }
+
+  body::after {
+    bottom: 32px;
+    right: -40px;
+    background: radial-gradient(circle, rgba(255, 135, 99, 0.35), transparent 60%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--text-main);
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 999px;
+    border: 2px solid transparent;
+  }
+
+  .page-shell {
+    width: min(100%, 1200px);
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+    padding-block: clamp(2rem, 3vw, 3.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 3vw, 3.75rem);
+  }
+
+  @media (max-width: 768px) {
+    body {
+      line-height: 1.55;
+      padding-bottom: 3.5rem;
+    }
+
+    body::before,
+    body::after {
+      width: clamp(200px, 65vw, 320px);
+      height: clamp(200px, 65vw, 320px);
+      filter: blur(90px);
+    }
+
+    .page-shell {
+      padding-inline: clamp(1rem, 5vw, 1.75rem);
+      padding-block: clamp(1.5rem, 5vw, 2.5rem);
+      gap: clamp(1.75rem, 5vw, 2.75rem);
+    }
+
+    section {
+      border-radius: 1.75rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    h1 {
+      font-size: clamp(2rem, 8vw, 2.75rem);
+      line-height: 1.25;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 7vw, 2.2rem);
+      line-height: 1.25;
+    }
+
+    h3 {
+      font-size: clamp(1.2rem, 5.5vw, 1.6rem);
+    }
+
+    p,
+    li {
+      font-size: 0.97rem;
+    }
+
+    .page-shell {
+      padding-inline: clamp(0.9rem, 5vw, 1.25rem);
+    }
+  }
+}

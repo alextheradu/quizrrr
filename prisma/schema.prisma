@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SourceType {
+  PASTE
+  QUIZLET_IMPORT
+  DOC_UPLOAD
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SHORT_ANSWER
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id               String          @id @default(cuid())
+  name             String?
+  email            String          @unique
+  emailVerified    DateTime?
+  image            String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  accounts         Account[]
+  sessions         Session[]
+  noteSets         NoteSet[]
+  quizzes          Quiz[]          @relation("UserQuizzes")
+  quizAttempts     QuizAttempt[]
+  flashcardSets    FlashcardSet[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  oauth_token_secret String?
+  oauth_token        String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model NoteSet {
+  id         String      @id @default(cuid())
+  userId     String
+  title      String
+  rawContent String      @db.Text
+  sourceType SourceType  @default(PASTE)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  shareToken String?     @unique
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizzes    Quiz[]
+  collaborators NoteCollaborator[]
+  flashcardSets FlashcardSet[]
+}
+
+model Quiz {
+  id        String     @id @default(cuid())
+  userId    String
+  noteSetId String
+  title     String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  shareToken String?   @unique
+  isPublicTemplate Boolean @default(false)
+  templateDescription String?
+  user      User       @relation("UserQuizzes", fields: [userId], references: [id], onDelete: Cascade)
+  noteSet   NoteSet    @relation(fields: [noteSetId], references: [id], onDelete: Cascade)
+  questions Question[]
+  attempts  QuizAttempt[]
+  challenges ClassroomChallenge[]
+}
+
+model Question {
+  id             String        @id @default(cuid())
+  quizId         String
+  prompt         String        @db.Text
+  type           QuestionType
+  choices        Json?
+  correctAnswer  Json
+  explanation    String        @db.Text
+  difficulty     Difficulty
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  quiz           Quiz          @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  responses      QuestionResponse[]
+}
+
+model QuizAttempt {
+  id              String             @id @default(cuid())
+  quizId          String
+  userId          String
+  startedAt       DateTime           @default(now())
+  completedAt     DateTime?
+  score           Float?
+  summaryFeedback String?            @db.Text
+  studyRoadmap    String?            @db.Text
+  quiz            Quiz               @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responses       QuestionResponse[]
+}
+
+model QuestionResponse {
+  id             String    @id @default(cuid())
+  quizAttemptId  String
+  questionId     String
+  userAnswer     Json
+  isCorrect      Boolean
+  confidence     Int?
+  feedback       String?   @db.Text
+  createdAt      DateTime  @default(now())
+  attempt        QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  question       Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model NoteCollaborator {
+  id                String   @id @default(cuid())
+  noteSetId         String
+  collaboratorEmail String
+  createdAt         DateTime @default(now())
+  noteSet           NoteSet  @relation(fields: [noteSetId], references: [id], onDelete: Cascade)
+
+  @@unique([noteSetId, collaboratorEmail])
+}
+
+model ClassroomChallenge {
+  id        String   @id @default(cuid())
+  quizId    String
+  token     String   @unique
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model FlashcardSet {
+  id         String    @id @default(cuid())
+  noteSetId  String
+  userId     String
+  title      String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  noteSet    NoteSet   @relation(fields: [noteSetId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcards Flashcard[]
+}
+
+model Flashcard {
+  id             String   @id @default(cuid())
+  flashcardSetId String
+  front          String   @db.Text
+  back           String   @db.Text
+  createdAt      DateTime @default(now())
+  flashcardSet   FlashcardSet @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+}
