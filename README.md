@@ -1,23 +1,30 @@
-# Notle
+# Quizzr
 
-Notle turns messy student notes into cozy, confidence-building quizzes powered by OpenRouter.
+Quizzr is the cozy AI study buddy built for the Student Hackpad 2025 Hackathon. It turns sleepy, unstructured notes into gentle
+quizzes, reflective flashcards, and story-like feedback—free while bigger platforms upsell access.
+
+## Why it exists
+
+- **Hackathon roots.** Crafted for Student Hackpad 2025 to prove AI study tools can be transparent, and affordable.
+- **Free while we co-build.** Competitors lock AI drills behind $15+/mo plans; Quizzr stays free and ad-free while we gather        feedback from students in out public beta. 
+- **Trust-first design.** Privacy, OAuth disclosures, and the landing page all emphasize data staying in your workspace, never sold
+	to ad tech.
+
+## Highlights
+
+- 📝 Import notes from anywhere: paste raw text, upload docs, or drop Quizlet exports.
+- 🤖 OpenRouter-powered quiz generation with per-type controls (multiple choice vs. short answer) and mixed difficulty.
+- 📊 Confidence tracking overlays: graph self-reported confidence next to accuracy so you know when to slow down.
+- 📚 Guided reflections: every quiz run ends with narrative summaries, next steps, and accountability tips.
+- 🃏 Flashcards and study view: generate decks, flip cards, and now manually tweak cards through the editor modal.
+- 🔐 Auth via Google OAuth + passwordless email, with NextAuth managing sessions.
+- 📴 Collaboration links & classroom challenges are paused while the beta team helps rebuild the experience.
 
 ## Requirements
 
 - Node.js 20+
 - npm 10+
-- Docker (for PostgreSQL)
-
-## Features
-
-- 📝 Paste or upload notes, organized per student account.
-- 🤖 OpenRouter-powered quiz generation with mixed difficulties and formats.
-- 🧠 Personalized AI feedback with confidence-aware summaries and study roadmaps.
-- 👯 Collaboration links are temporarily paused while we revamp the experience.
-- 🏫 Classroom challenges are also paused during the same maintenance window.
-- 🃏 Generate bite-sized flashcards from notes with a dedicated study view.
-- 🔐 Authentication via Google OAuth and email magic links (SMTP).
-- 🎨 Cozy Claude-inspired theme with light/dark mode toggle and Tailwind components.
+- Docker (PostgreSQL 16 via `docker-compose`)
 
 ## Quick start
 
@@ -44,7 +51,7 @@ npx prisma migrate dev
 npm run dev
 ```
 
-The app runs at `http://localhost:3000`.
+Visit `http://localhost:3000` and sign in with Google or email to reach the dashboard.
 
 ## Scripts
 
@@ -59,44 +66,47 @@ The app runs at `http://localhost:3000`.
 
 ## Environment variables
 
-See `.env.example` for the full list. Never commit real secrets.
+Check `.env.example` for the full list. Keep secrets local.
 
-Key values:
+- `OPENROUTER_API_KEY` / `OPENROUTER_MODEL` – AI quiz + feedback generation
+- `SMTP_*` – email magic links for NextAuth
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` – OAuth provider
+- `NEXTAUTH_SECRET` – session encryption
+- `NEXTAUTH_URL` – public site origin (e.g. `https://quizzr.alexradu.co`)
+- `AUTH_URL` – NextAuth endpoint on the same origin (e.g. `https://quizzr.alexradu.co/api/auth`)
 
-- `OPENROUTER_API_KEY` / `OPENROUTER_MODEL` for quiz + feedback generation.
-- `SMTP_*` for the NextAuth email provider.
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` for OAuth.
-- `NEXTAUTH_SECRET` for secure session encryption.
-- `NEXTAUTH_URL` should match the public site origin (e.g., `https://quizzr.alexradu.co`).
-- `AUTH_URL` must point to the auth endpoint on that same origin (e.g., `https://quizzr.alexradu.co/api/auth`). Use `http://localhost:3000` plus `/api/auth` while developing locally so callbacks stay on your tunnel/host file.
+### Importing flashcards from Quizlet
 
-### Importing sets from Quizlet
-
-Quizrrr no longer tries to fetch Quizlet links directly (free proxies rarely work and often violate their terms). Instead, use
-Quizlet’s built-in export feature:
+Quizzr no longer scrapes Quizlet URLs. Instead:
 
 1. Open the Quizlet set and click **Export**.
-2. Leave the format as plain text (or “Text” in their UI) and copy the generated terms/definitions.
-3. Paste that text into the “Paste notes” field in Quizzrrr. Each term/definition pair becomes editable content you can clean up or
-	tag before generating quizzes.
+2. Keep the output as plain text and copy the generated terms/definitions.
+3. Paste that text into the “Paste notes” field in Quizzr; each row becomes editable content you can tag before generating
+	 quizzes or flashcards.
 
 ## Project structure
 
 ```
-app/            # Next.js App Router routes
-components/     # Reusable UI pieces
+app/            # Next.js App Router routes and pages
+components/     # Reusable UI pieces (forms, modals, buttons)
 lib/            # Utilities (Prisma, OpenRouter, auth helpers)
 prisma/         # Schema, migrations, seed script
+public/         # Static assets
 ```
 
 ## Database
 
 - PostgreSQL via `docker-compose.yml` (image `postgres:16`)
-- Default database URL: `postgresql://postgres:postgres@localhost:5432/quiz_app?schema=public`
+- Default connection: `postgresql://postgres:postgres@localhost:5432/quiz_app?schema=public`
 
 ## Testing the AI flow
 
-1. Create a note set with pasted text.
-2. Click **Generate quiz** to call OpenRouter (requires valid API key and model name).
-3. Take the quiz and submit answers to receive AI-authored study feedback.
-4. Optional: Use **Generate flashcards** on the same note set to create a deck for quick review.
+1. Create a note set with pasted text or an imported document.
+2. Click **Generate quiz**, pick a question mix, and let OpenRouter draft prompts.
+3. Take the quiz, submit answers, and read the narrative feedback.
+4. Optionally generate flashcards from the same notes and study in the flip-view.
+
+## Built with ❤️ for Student Hackpad 2025
+
+Quizzr was pitched live during Student Hackpad’s 2025 finals to show that mindful AI tutoring can stay calm, transparent, and
+accessible. If you’re building with us—or want to bring Quizzr into your campus pilot—email alex@alexradu.co.
