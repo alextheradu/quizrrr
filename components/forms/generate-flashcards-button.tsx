@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { PrimaryButton } from "@/components/ui/button";
 import { GenerationLoadingModal } from "@/components/ui/loading-modal";
+import { MAX_FLASHCARDS_PER_SET } from "@/lib/constants";
 
 interface FlashcardSetResponse {
   flashcardSet: { id: string };
@@ -27,10 +28,12 @@ const getErrorMessage = (payload: unknown, fallback: string) => {
 const isFlashcardSetResponse = (payload: unknown): payload is FlashcardSetResponse =>
   isRecord(payload) && typeof (payload as { flashcardSet?: { id?: unknown } }).flashcardSet?.id === "string";
 
+const DEFAULT_CARD_COUNT = Math.min(12, MAX_FLASHCARDS_PER_SET);
+
 export function GenerateFlashcardsButton({ noteSetId, defaultTitle }: GenerateFlashcardsButtonProps) {
   const router = useRouter();
   const [title, setTitle] = useState(defaultTitle ?? "");
-  const [cardCount, setCardCount] = useState(12);
+  const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -76,7 +79,7 @@ export function GenerateFlashcardsButton({ noteSetId, defaultTitle }: GenerateFl
             id="card-count"
             type="range"
             min={6}
-            max={24}
+            max={MAX_FLASHCARDS_PER_SET}
             step={1}
             value={cardCount}
             onChange={(event) => setCardCount(Number(event.target.value))}

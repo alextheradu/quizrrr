@@ -2,6 +2,22 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/link-button";
 
+const FUTURE_GALLERY_SECTIONS = [
+  {
+    title: "Curated template shelves",
+    detail: "Tagging, search, difficulty filters, and remix stats will help you find the perfect starting point.",
+  },
+  {
+    title: "Collaboration + sharing",
+    detail:
+      "Regenerated share links, classroom challenge playlists, and opt-in collaborator invites return once we finish the new moderation flow.",
+  },
+  {
+    title: "Notes ↔ quiz cross-posting",
+    detail: "Public notes, flashcards, and quizzes will live side-by-side so you can clone an entire study stack in one click.",
+  },
+];
+
 export default async function QuizTemplateGalleryPage() {
   const templates = await prisma.quiz.findMany({
     where: { isPublicTemplate: true },
@@ -18,8 +34,29 @@ export default async function QuizTemplateGalleryPage() {
       <div className="space-y-2 text-center">
         <p className="text-xs uppercase tracking-[0.4em] text-text-muted">Community gallery</p>
         <h1 className="text-3xl font-semibold text-text-main">Popular study templates</h1>
-        <p className="text-text-muted">Browse ready-made quizzes and remix them for your classes.</p>
+        <p className="text-text-muted">
+          Work in progress: we’re rebuilding this gallery with filters, remix stats, and safer collaboration tooling.
+        </p>
+        <p className="text-xs text-text-muted">
+          Until then, you’ll just see recently published templates—expect frequent updates as the collaboration relaunch ships.
+        </p>
       </div>
+
+      <Card className="border-dashed border-accent/50 bg-accent/5">
+        <CardTitle>This gallery relaunch is underway</CardTitle>
+        <CardDescription className="mt-1 text-text-main">
+          Here’s what the finished experience will include, alongside the returning share features like collaboration links and
+          classroom challenges:
+        </CardDescription>
+        <ul className="mt-4 space-y-3 text-sm text-text-main">
+          {FUTURE_GALLERY_SECTIONS.map((section) => (
+            <li key={section.title} className="rounded-2xl border border-border-subtle/70 bg-bg-soft/70 px-4 py-3">
+              <p className="font-semibold">{section.title}</p>
+              <p className="text-text-muted">{section.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
         {templates.map((template) => (
@@ -60,8 +97,10 @@ export default async function QuizTemplateGalleryPage() {
         ))}
         {templates.length === 0 && (
           <Card>
-            <CardTitle>No templates yet</CardTitle>
-            <CardDescription className="mt-1">Publish a quiz from the editor to see it here.</CardDescription>
+            <CardTitle>Templates rolling out</CardTitle>
+            <CardDescription className="mt-1">
+              Publish a quiz from the editor to see it here once the gallery relaunch is complete.
+            </CardDescription>
           </Card>
         )}
       </div>

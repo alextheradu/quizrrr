@@ -6,6 +6,7 @@ import { FlashcardViewer } from "@/components/forms/flashcard-viewer";
 import { FlashcardDeleteButton } from "@/components/forms/flashcard-delete-button";
 import { LinkButton } from "@/components/ui/link-button";
 import { FlashcardEditor } from "@/components/forms/flashcard-editor";
+import { ActionModal } from "@/components/ui/action-modal";
 
 interface FlashcardDetailPageProps {
   params: { id: string };
@@ -40,6 +41,18 @@ export default async function FlashcardDetailPage({ params }: FlashcardDetailPag
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <ActionModal
+            triggerLabel="Edit flashcards"
+            triggerVariant="secondary"
+            title="Edit this deck"
+            description="Adjust prompts, answers, or add fresh cards without leaving study mode."
+          >
+            <FlashcardEditor
+              flashcardSetId={flashcardSet.id}
+              initialTitle={flashcardSet.title}
+              initialCards={flashcardSet.flashcards}
+            />
+          </ActionModal>
           {flashcardSet.noteSet && (
             <LinkButton href={`/notes/${flashcardSet.noteSet.id}`} variant="ghost">
               View notes
@@ -51,21 +64,11 @@ export default async function FlashcardDetailPage({ params }: FlashcardDetailPag
 
       <Card>
         <CardTitle>Study session</CardTitle>
-        <CardDescription className="mt-1">Tap the card to flip between prompt and answer.</CardDescription>
+        <CardDescription className="mt-1">
+          Tap the card to flip between prompt and answer. Use the edit button above to tweak this deck without leaving the page.
+        </CardDescription>
         <div className="mt-4">
           <FlashcardViewer flashcards={flashcardSet.flashcards} />
-        </div>
-      </Card>
-
-      <Card>
-        <CardTitle>Edit manually</CardTitle>
-        <CardDescription className="mt-1">Tweak prompts, adjust answers, or add extra cards without re-generating.</CardDescription>
-        <div className="mt-4">
-          <FlashcardEditor
-            flashcardSetId={flashcardSet.id}
-            initialTitle={flashcardSet.title}
-            initialCards={flashcardSet.flashcards}
-          />
         </div>
       </Card>
     </div>

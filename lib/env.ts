@@ -15,8 +15,10 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   NEXTAUTH_SECRET: z.string().default("dev-secret"),
-  NEXTAUTH_URL: z.string().default("https://quizzr.alexradu.co"),
+  NEXTAUTH_URL: z.string().default("https://quizzr.org"),
   ADMIN_USER_EMAIL: z.string().optional(),
+  MAX_QUIZ_QUESTIONS: z.coerce.number().int().min(1).default(14),
+  MAX_FLASHCARDS_PER_SET: z.coerce.number().int().min(6).default(24),
 });
 
 export const env = envSchema.parse({
@@ -34,6 +36,8 @@ export const env = envSchema.parse({
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   ADMIN_USER_EMAIL: process.env.ADMIN_USER_EMAIL,
+  MAX_QUIZ_QUESTIONS: process.env.MAX_QUIZ_QUESTIONS,
+  MAX_FLASHCARDS_PER_SET: process.env.MAX_FLASHCARDS_PER_SET,
 });
 
 export type AppEnv = typeof env;

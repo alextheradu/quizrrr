@@ -72,8 +72,8 @@ Check `.env.example` for the full list. Keep secrets local.
 - `SMTP_*` – email magic links for NextAuth
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` – OAuth provider
 - `NEXTAUTH_SECRET` – session encryption
-- `NEXTAUTH_URL` – public site origin (e.g. `https://quizzr.alexradu.co`)
-- `AUTH_URL` – NextAuth endpoint on the same origin (e.g. `https://quizzr.alexradu.co/api/auth`)
+- `NEXTAUTH_URL` – public site origin (e.g. `https://quizzr.org`)
+- `AUTH_URL` – NextAuth endpoint on the same origin (e.g. `https://quizzr.org/api/auth`)
 
 ### Importing flashcards from Quizlet
 
@@ -105,6 +105,13 @@ public/         # Static assets
 2. Click **Generate quiz**, pick a question mix, and let OpenRouter draft prompts.
 3. Take the quiz, submit answers, and read the narrative feedback.
 4. Optionally generate flashcards from the same notes and study in the flip-view.
+
+## How We Built It
+
+- Frontend: Next.js App Router with TypeScript, React Server Components, Tailwind CSS, and Radix-inspired UI primitives.
+- Backend: Node.js 20 on Vercel/Next runtime with NextAuth, custom API routes, and OpenRouter for AI generation.
+- Database: PostgreSQL (Docker/Postgres 16) orchestrated through Prisma ORM.
+- Tooling: ESLint + TypeScript for safety, Turbo dev server, and OpenRouter SDK-free REST calls.
 
 ## Built with ❤️ for Student Hackpad 2025
 

@@ -8,6 +8,7 @@ import { lockBodyScroll, unlockBodyScroll } from "@/lib/scroll-lock";
 import { HOME_ROUTE } from "@/lib/constants";
 
 const STORAGE_KEY = "quizrrr:tutorial_seen";
+const ELIGIBLE_TUTORIAL_PATHS = new Set([HOME_ROUTE, "/dashboard"]);
 
 const steps = [
   {
@@ -38,7 +39,7 @@ export function TutorialGuide({ isSignedIn }: TutorialGuideProps) {
   const titleId = useId();
   const descriptionId = `${titleId}-description`;
   const pathname = usePathname();
-  const canShowTutorial = isSignedIn && pathname === HOME_ROUTE;
+  const canShowTutorial = isSignedIn && Boolean(pathname && ELIGIBLE_TUTORIAL_PATHS.has(pathname));
 
   useEffect(() => {
     setIsMounted(true);

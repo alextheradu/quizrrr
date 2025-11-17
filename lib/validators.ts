@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { MAX_QUIZ_QUESTIONS } from "@/lib/constants";
+import { MAX_FLASHCARDS_PER_SET, MAX_QUIZ_QUESTIONS } from "@/lib/constants";
 
-const MIN_QUIZ_QUESTION_TOTAL = 4;
+const MIN_QUIZ_QUESTION_TOTAL = 3;
+const MIN_FLASHCARD_COUNT = 4;
+const DEFAULT_FLASHCARD_COUNT = Math.min(12, MAX_FLASHCARDS_PER_SET);
 
 export const noteInputSchema = z.object({
   title: z.string().min(3, "Title is too short").max(120),
@@ -116,9 +118,9 @@ export const flashcardGenerateSchema = z.object({
   cardCount: z.coerce
     .number()
     .int()
-    .min(6, "Ask for at least 6 cards")
-    .max(24, "Ask for at most 24 cards")
-    .default(12),
+    .min(MIN_FLASHCARD_COUNT, `Ask for at least ${MIN_FLASHCARD_COUNT} cards`)
+    .max(MAX_FLASHCARDS_PER_SET, `Ask for at most ${MAX_FLASHCARDS_PER_SET} cards`)
+    .default(DEFAULT_FLASHCARD_COUNT),
 });
 
 export const flashcardUpdateSchema = z.object({
@@ -131,7 +133,8 @@ export const flashcardUpdateSchema = z.object({
         back: z.string().min(1, "Back text is required"),
       })
     )
-    .min(1, "Include at least one card"),
+    .min(1, "Include at least one card")
+    .max(MAX_FLASHCARDS_PER_SET, `Limit sets to ${MAX_FLASHCARDS_PER_SET} cards`),
 });
 
 export const templateToggleSchema = z.object({
