@@ -1,6 +1,6 @@
 # Quizzr
 
-Quizzr is the cozy AI study buddy built for the Student Hackpad 2025 Hackathon. It turns sleepy, unstructured notes into gentle
+Quizzr is the cozy AI study buddy built for the Student Hackpad 2025 Hackathon ([submission](https://devpost.com/software/quizzr-prsxik)). It turns sleepy, unstructured notes into gentle
 quizzes, reflective flashcards, and story-like feedback—free while bigger platforms upsell access.
 
 ## Why it exists
